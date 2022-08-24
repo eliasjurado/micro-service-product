@@ -9,30 +9,41 @@ namespace ProductAPI.Test
     {
         public readonly ITestOutputHelper _testOutputHelper;
         public readonly ProductRepositoryFixture _fixture;
-        public readonly IMapper _mapper;
+        //public readonly IMapper _mapper;
 
         public ProductRepositoryTest(IMapper mapper, ITestOutputHelper testOutputHelper, ProductRepositoryFixture fixture)
         {
+            //var mappingConfig = new MapperConfiguration(config =>
+            //{
+            //    config.CreateMap<ProductDto, Product>();
+            //    config.CreateMap<Product, ProductDto>();
+            //});
             _testOutputHelper = testOutputHelper;
             _fixture = fixture;
-            _mapper = mapper;
+            //_mapper = mappingConfig.CreateMapper();
+        }
+
+
+        [Fact]
+        public void CreateUpdateProduct_IsCreatedOrNot()
+        {
+            var x = true;
+            Assert.Equal(true, x);
         }
 
         //[Theory]
         //[AvailableButterStockData]
-        //public void AvailableButterStock_IsEnoughButter(Product data, float value, bool expected)
+        //public async void CreateUpdateProduct_IsCreatedOrNot(ProductDto data)
         //{
-        //    _testOutputHelper.WriteLine($"AvailableButterStock_IsEnoughButter - {DateTime.Now}");
+
+
         //    var mockContext = new ApplicationDbContext(_fixture.mockOptions);
-        //    mockContext.Products.Add(data);
         //    mockContext.SaveChanges();
         //    var mockRepository = new ProductRepository(mockContext, _mapper);
 
-        //    var result = mockRepository.AvailableButterStock(value);
-        //    mockContext.Products.RemoveRange(mockContext.Products);
-        //    mockContext.SaveChanges();
+        //    var result = await mockRepository.CreateUpdateProduct(data);
 
-        //    Assert.Equal(expected, result);
+        //    Assert.Equal(result, data);
         //}
 
 

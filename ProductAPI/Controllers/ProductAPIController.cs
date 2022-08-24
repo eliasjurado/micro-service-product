@@ -1,11 +1,9 @@
-﻿using ProductAPI.Models.Dto;
+﻿using Microsoft.AspNetCore.Mvc;
+using ProductAPI.Models.Dto;
 using ProductAPI.Models.Dtos;
 using ProductAPI.Repository;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProductAPI.Controllers
@@ -29,7 +27,7 @@ namespace ProductAPI.Controllers
                 IEnumerable<ProductDto> productDtos = await _productRepository.GetProducts();
                 _response.Result = productDtos;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _response.IsSuccess = false;
                 _response.ErrorMessages
@@ -58,7 +56,7 @@ namespace ProductAPI.Controllers
 
 
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         public async Task<object> Post([FromBody] ProductDto productDto)
         {
             try
@@ -77,7 +75,7 @@ namespace ProductAPI.Controllers
 
 
         [HttpPut]
-        [Authorize]
+        //[Authorize]
         public async Task<object> Put([FromBody] ProductDto productDto)
         {
             try
@@ -95,7 +93,7 @@ namespace ProductAPI.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles ="Admin")]
+        //[Authorize(Roles ="Admin")]
         [Route("{id}")]
         public async Task<object> Delete(int id)
         {
