@@ -28,7 +28,7 @@ namespace ProductAPI.Test
         public void CreateUpdateProduct_IsCreatedOrNot()
         {
             var x = true;
-            Assert.Equal(true, x);
+            Assert.True(x);
         }
 
         //[Theory]
