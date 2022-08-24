@@ -1,29 +1,9 @@
-using AutoMapper;
-using ProductAPI.Test.Fixtures;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace ProductAPI.Test
 {
-    public class ProductRepositoryTest : IClassFixture<ProductRepositoryFixture>
+    public class ProductRepositoryTest
     {
-        public readonly ITestOutputHelper _testOutputHelper;
-        public readonly ProductRepositoryFixture _fixture;
-        //public readonly IMapper _mapper;
-
-        public ProductRepositoryTest(IMapper mapper, ITestOutputHelper testOutputHelper, ProductRepositoryFixture fixture)
-        {
-            //var mappingConfig = new MapperConfiguration(config =>
-            //{
-            //    config.CreateMap<ProductDto, Product>();
-            //    config.CreateMap<Product, ProductDto>();
-            //});
-            _testOutputHelper = testOutputHelper;
-            _fixture = fixture;
-            //_mapper = mappingConfig.CreateMapper();
-        }
-
-
         [Fact]
         public void CreateUpdateProduct_IsCreatedOrNot()
         {
