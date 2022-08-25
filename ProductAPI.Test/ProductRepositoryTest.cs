@@ -1,30 +1,30 @@
+using ProductAPI.Models.Dtos;
+using ProductAPI.Repository;
+using ProductAPI.Test.DataAttributes;
+using ProductAPI.Test.Fixtures;
 using Xunit;
 
 namespace ProductAPI.Test
 {
-    public class ProductRepositoryTest
+    public class ProductRepositoryTest : IClassFixture<ProductRepositoryFixture>
     {
-        [Fact]
-        public void CreateUpdateProduct_IsCreatedOrNot()
+        public readonly ProductRepositoryFixture _fixture;
+
+        public ProductRepositoryTest(ProductRepositoryFixture fixture)
         {
-            var x = true;
-            Assert.True(x);
+            _fixture = fixture;
         }
 
-        //[Theory]
-        //[AvailableButterStockData]
-        //public async void CreateUpdateProduct_IsCreatedOrNot(ProductDto data)
-        //{
+        [Theory]
+        [ProductData]
+        public async void CreateUpdateProduct_IsCreated(ProductDto data, int expected)
+        {
+            var mockRepository = new ProductRepository(_fixture.dbContext, _fixture.mapper);
 
+            var result = await mockRepository.CreateUpdateProduct(data);
 
-        //    var mockContext = new ApplicationDbContext(_fixture.mockOptions);
-        //    mockContext.SaveChanges();
-        //    var mockRepository = new ProductRepository(mockContext, _mapper);
-
-        //    var result = await mockRepository.CreateUpdateProduct(data);
-
-        //    Assert.Equal(result, data);
-        //}
+            Assert.Equal(expected, result.ProductId);
+        }
 
 
 
