@@ -1,3 +1,5 @@
+using ProductAPI.DbContexts;
+using ProductAPI.Models;
 using ProductAPI.Models.Dtos;
 using ProductAPI.Repository;
 using ProductAPI.Test.DataAttributes;
@@ -16,7 +18,7 @@ namespace ProductAPI.Test
         }
 
         [Theory]
-        [ProductData]
+        [ProductUpsertData]
         public async void CreateUpdateProduct_IsOrNotCreated(ProductDto data, int resultId, bool expected)
         {
             var mockRepository = new ProductRepository(_fixture.dbContext, _fixture.mapper);
@@ -26,6 +28,21 @@ namespace ProductAPI.Test
 
             Assert.Equal(expected, result);
         }
+
+        [Theory]
+        [ProductDeleteData]
+        public async void DeleteProduct_IsOrNotDeleted(Product data, int resultId, bool expected)
+        {
+            var mockContext = new ApplicationDbContext(_fixture.mockOptions);
+            mockContext.Products.Add(data);
+            mockContext.SaveChanges();
+            var mockRepository = new ProductRepository(mockContext, _fixture.mapper);
+
+            var response = await mockRepository.DeleteProduct(resultId);
+
+            Assert.Equal(expected, response);
+        }
+
 
         //[Theory]
         //[AvailableFlourStockData]

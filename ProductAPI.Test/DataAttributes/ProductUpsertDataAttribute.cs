@@ -4,7 +4,7 @@ using Xunit.Sdk;
 
 namespace ProductAPI.Test.DataAttributes
 {
-    public class ProductDataAttribute : DataAttribute
+    public class ProductUpsertDataAttribute : DataAttribute
     {
 
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
