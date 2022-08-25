@@ -17,17 +17,15 @@ namespace ProductAPI.Test
 
         [Theory]
         [ProductData]
-        public async void CreateUpdateProduct_IsCreated(ProductDto data, int expected)
+        public async void CreateUpdateProduct_IsOrNotCreated(ProductDto data, int resultId, bool expected)
         {
             var mockRepository = new ProductRepository(_fixture.dbContext, _fixture.mapper);
 
-            var result = await mockRepository.CreateUpdateProduct(data);
+            var response = await mockRepository.CreateUpdateProduct(data);
+            var result = response.ProductId == resultId;
 
-            Assert.Equal(expected, result.ProductId);
+            Assert.Equal(expected, result);
         }
-
-
-
 
         //[Theory]
         //[AvailableFlourStockData]
