@@ -104,28 +104,30 @@ namespace ProductAPI.Test
             }
         }
 
-        //[Theory]
-        //[ProductUpdateData]
-        //public async void Put_ReturnsUpdatedProduct(Product data, ProductDto expected)
-        //{
-        //    using (var context = new ApplicationDbContext(_fixture.CreateNewContextOptions()))
-        //    {
-        //        context.Products.AddRange(data);
-        //        context.SaveChanges();
-        //        var repository = new ProductRepository(context, _fixture.mapper);
-        //        var controller = new ProductAPIController(repository);
+        [Theory]
+        [ProductUpdateData]
+        public async void Put_ReturnsUpdatedProduct(Product data, ProductDto expected)
+        {
 
-        //        var response = await controller.Put(expected);
-        //        var updated = (ProductDto)((ResponseDto)response).Result;
-        //        //Equal
-        //        Assert.NotEqual(expected.ProductId, updated.ProductId);
-        //        Assert.NotEqual(expected.Name, updated.Name);
-        //        Assert.NotEqual(expected.Price, updated.Price);
-        //        Assert.NotEqual(expected.Stock, updated.Stock);
-        //        Assert.NotEqual(expected.Description, updated.Description);
-        //        Assert.NotEqual(expected.CategoryName, updated.CategoryName);
-        //        Assert.NotEqual(expected.ImageUrl, updated.ImageUrl);
-        //    }
-        //}
+            using (var context = new ApplicationDbContext(_fixture.CreateNewContextOptions()))
+            {
+                context.Products.Add(data);
+                context.SaveChanges();
+
+                var repository = new ProductRepository(context, _fixture.mapper);
+                var controller = new ProductAPIController(repository);
+
+                var response = await controller.Put(expected);
+                var updated = (ProductDto)((ResponseDto)response).Result;
+
+                Assert.Equal(expected.ProductId, updated.ProductId);
+                Assert.Equal(expected.Name, updated.Name);
+                Assert.Equal(expected.Price, updated.Price);
+                Assert.Equal(expected.Stock, updated.Stock);
+                Assert.Equal(expected.Description, updated.Description);
+                Assert.Equal(expected.CategoryName, updated.CategoryName);
+                Assert.Equal(expected.ImageUrl, updated.ImageUrl);
+            }
+        }
     }
 }
