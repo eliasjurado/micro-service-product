@@ -13,7 +13,6 @@ namespace ProductAPI.Test
     public class ProductControllerTest : IClassFixture<ProductRepositoryFixture>
     {
         public readonly ProductRepositoryFixture _fixture;
-
         public ProductControllerTest(ProductRepositoryFixture fixture)
         {
             _fixture = fixture;
@@ -43,6 +42,21 @@ namespace ProductAPI.Test
                 var assertion = typeof(ProductDto) == response.Result.GetType() || typeof(List<ProductDto>) == response.Result.GetType();
 
                 Assert.Equal(expected, assertion);
+            }
+        }
+        [Theory]
+        [ProductGetAllData]
+        public async void Get_ReturnsProductList_Throws(List<Product> data, bool expected)
+        {
+            using (var context = new ApplicationDbContext(_fixture.failOptions))
+            {
+                var repository = new ProductRepository(context, _fixture.mapper);
+                var controller = new ProductAPIController(repository);
+                var response = await controller.Get();
+                var assertion = response.GetType() == typeof(ResponseDto);
+                Assert.Equal(expected, assertion);
+                Assert.True(((ResponseDto)response).DisplayMessage == "");
+                Assert.True(((ResponseDto)response).ErrorMessages.Count() > 0);
             }
         }
 

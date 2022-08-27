@@ -23,6 +23,8 @@ namespace ProductAPI.Test.DataAttributes
                 1,
                 9,
                 true,
+            };
+            yield return new object[] {
                 new Product {
                     ProductId = 1,
                     Name = "Bread",
@@ -36,6 +38,8 @@ namespace ProductAPI.Test.DataAttributes
                 1,
                 9,
                 true,
+            };
+            yield return new object[] {
                 new Product {
                     ProductId = 1,
                     Name = "Bread",
