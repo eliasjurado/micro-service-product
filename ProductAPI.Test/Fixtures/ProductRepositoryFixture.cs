@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 using ProductAPI.DbContexts;
 using ProductAPI.Models;
 using ProductAPI.Models.Dtos;
@@ -9,26 +10,40 @@ namespace ProductAPI.Test.Fixtures
 {
     public class ProductRepositoryFixture : IDisposable
     {
-        public static string dbName = "dbProduct";
-        public MemoryStream memoryStream => new MemoryStream();
+        public string dbName = "dbProduct";
 
         public IMapper mapper = new MapperConfiguration(config =>
         {
             config.CreateMap<ProductDto, Product>();
             config.CreateMap<Product, ProductDto>();
+            config.CreateMap<ProcessProductDto, ProcessProduct>();
+            config.CreateMap<ProcessProduct, ProcessProductDto>();
         }).CreateMapper();
 
-        public DbContextOptions<ApplicationDbContext> mockOptions => new DbContextOptionsBuilder<ApplicationDbContext>()
+        public IMapper badMapper = new MapperConfiguration(config =>
+        {
+        }).CreateMapper();
+
+        public DbContextOptions<ApplicationDbContext> badOptions => new DbContextOptionsBuilder<ApplicationDbContext>().Options;
+
+        public DbContextOptions<ApplicationDbContext> CreateNewContextOptions()
+        {
+            var serviceProvider = new ServiceCollection()
+                .AddEntityFrameworkInMemoryDatabase()
+                .BuildServiceProvider();
+
+            var mockOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: dbName)
+            .UseInternalServiceProvider(serviceProvider)
             .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+            .EnableSensitiveDataLogging()
             .Options;
 
-        public ApplicationDbContext dbContext => new ApplicationDbContext(mockOptions);
+            return mockOptions;
+        }
 
-        public CancellationTokenSource cancellationTokenSource => new CancellationTokenSource(1000);
         public void Dispose()
         {
-            memoryStream.Close();
         }
     }
 }
