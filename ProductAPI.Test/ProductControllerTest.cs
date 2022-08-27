@@ -116,6 +116,7 @@ namespace ProductAPI.Test
 
                 var repository = new ProductRepository(context, _fixture.mapper);
                 var controller = new ProductAPIController(repository);
+                context.ChangeTracker.Clear();
 
                 var response = await controller.Put(expected);
                 var updated = (ProductDto)((ResponseDto)response).Result;
