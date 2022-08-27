@@ -185,6 +185,23 @@ namespace ProductAPI.Test
             }
         }
 
+        [Theory]
+        [ProductUpdateData]
+        public async void Put_Catch_EFCore_ClearChangeTrackerForUs(Product data, ProductDto expected)
+        {
+
+            using (var context = new ApplicationDbContext(_fixture.CreateNewContextOptions()))
+            {
+                context.Products.Add(data);
+                context.SaveChanges();
+                var repository = new ProductRepository(context, _fixture.mapper);
+                var controller = new ProductAPIController(repository);
+                var response = (ResponseDto)await controller.Put(expected);
+                Assert.False(response.IsSuccess);
+                Assert.True(response.ErrorMessages.Count() > 0);
+            }
+        }
+
         [Fact]
         public async void Put_CatchBadOptions()
         {

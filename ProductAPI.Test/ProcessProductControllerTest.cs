@@ -1,4 +1,5 @@
-﻿using ProductAPI.Controllers;
+﻿using Moq;
+using ProductAPI.Controllers;
 using ProductAPI.DbContexts;
 using ProductAPI.Models;
 using ProductAPI.Models.Dto;
@@ -43,6 +44,20 @@ namespace ProductAPI.Test
                 var assertion = ((ResponseDto)response).Result.GetType() == typeof(ProcessProductDto);
 
                 Assert.Equal(expected, assertion);
+            }
+        }
+        [Fact]
+        public async void RegisterBreadProductionAsync_CatchBadOptions()
+        {
+            var badObj = new ProcessProductDto();
+            using (var context = new ApplicationDbContext(_fixture.badOptions))
+            {
+                var repository = new ProductRepository(context, _fixture.mapper);
+                var controller = new ProcessProductAPIController(repository);
+
+                var response = (ResponseDto)await controller.RegisterBreadProductionAsync(It.IsAny<ProcessProductDto>());
+                Assert.False(response.IsSuccess);
+                Assert.True(response.ErrorMessages.Count() > 0);
             }
         }
         [Theory]
