@@ -1,5 +1,6 @@
 ﻿using ProductAPI.Controllers;
 using ProductAPI.DbContexts;
+using ProductAPI.Models;
 using ProductAPI.Models.Dto;
 using ProductAPI.Models.Dtos;
 using ProductAPI.Repository;
@@ -39,27 +40,46 @@ namespace ProductAPI.Test
                 var controller = new ProcessProductAPIController(repository);
 
                 var response = await controller.RegisterBreadProductionAsync(arg);
-                var obj = (ResponseDto)response;
                 var assertion = ((ResponseDto)response).Result.GetType() == typeof(ProcessProductDto);
 
                 Assert.Equal(expected, assertion);
             }
         }
+        [Theory]
+        [ProcessProductStockGetData]
+        public async void GetProductAvailableAsync_ReturnsQuantity(Product data, int input_idProduct, int output_quantity, bool expected)
+        {
+            using (var context = new ApplicationDbContext(_fixture.CreateNewContextOptions()))
+            {
+                context.Products.Add(data);
+                context.SaveChanges();
+                var repository = new ProductRepository(context, _fixture.mapper);
+                var controller = new ProcessProductAPIController(repository);
 
-        /*
-           public int Id { get; set; }
-        
-        public int ProductId { get; set; }   
-                
-        public double Stock { get; set; }       
+                var response = await controller.GetProductAvailableAsync(input_idProduct);
+                var assertion = (double)((ResponseDto)response).Result == output_quantity;
 
-        public DateTime ExpirationDate { get; set; }
-        public DateTime ProductionDate { get; set; }
-         */
+                Assert.Equal(expected, assertion);
+            }
+        }
 
-        /*
-        public async Task<object> GetProductAvailableAsync(int idProduct)
-        public async Task<object> UpdateProductStockAsync(double amount, int idProduct)
-        */
+        [Theory]
+        [ProcessProductStockUpdateData]
+        public async void UpdateProductStockAsync_ReturnsQuantity(Product data, double input_amount, int input_idProduct, double output_Stock, bool expected)
+        {
+            using (var context = new ApplicationDbContext(_fixture.CreateNewContextOptions()))
+            {
+                context.Products.Add(data);
+                context.SaveChanges();
+                var repository = new ProductRepository(context, _fixture.mapper);
+                var controller = new ProcessProductAPIController(repository);
+
+                var response = await controller.UpdateProductStockAsync(input_amount, input_idProduct);
+                var result = (ProductDto)((ResponseDto)response).Result;
+                var assertion = result.Stock == output_Stock;
+
+                Assert.Equal(expected, assertion);
+            }
+        }
     }
 }

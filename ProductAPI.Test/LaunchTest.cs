@@ -1,7 +1,6 @@
-﻿using ProductAPI.Test.Fixtures;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using ProductAPI.Test.Fixtures;
 using Xunit;
 
 namespace ProductAPI.Test
@@ -32,22 +31,5 @@ namespace ProductAPI.Test
             var result = new Startup(configuration);
             Assert.IsType<Startup>(result);
         }
-
-        [Fact]
-        public void ConfigureServices_IsLaunched()
-        {
-            var services = new ServiceCollection();
-            services.AddSingleton(_fixture.mapper);
-            var provider = services.BuildServiceProvider();
-
-            IConfiguration configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection()
-                .Build();
-            var result = new Startup(configuration);
-            result.ConfigureServices(services);
-            Assert.IsType<Startup>(result);
-        }
-
-
     }
 }
