@@ -20,7 +20,7 @@ namespace ProductAPI.Test.Fixtures
             config.CreateMap<ProcessProduct, ProcessProductDto>();
         }).CreateMapper();
 
-        public DbContextOptions<ApplicationDbContext> failOptions => new DbContextOptionsBuilder<ApplicationDbContext>().Options)
+        public DbContextOptions<ApplicationDbContext> failOptions => new DbContextOptionsBuilder<ApplicationDbContext>().Options;
 
         public DbContextOptions<ApplicationDbContext> CreateNewContextOptions()
         {
