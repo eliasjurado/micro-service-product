@@ -24,7 +24,7 @@ namespace ProductAPI.Test.Fixtures
         {
         }).CreateMapper();
 
-        public DbContextOptions<ApplicationDbContext> failOptions => new DbContextOptionsBuilder<ApplicationDbContext>().Options;
+        public DbContextOptions<ApplicationDbContext> badOptions => new DbContextOptionsBuilder<ApplicationDbContext>().Options;
 
         public DbContextOptions<ApplicationDbContext> CreateNewContextOptions()
         {

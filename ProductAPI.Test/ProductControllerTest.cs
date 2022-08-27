@@ -1,4 +1,5 @@
-﻿using ProductAPI.Controllers;
+﻿using Moq;
+using ProductAPI.Controllers;
 using ProductAPI.DbContexts;
 using ProductAPI.Models;
 using ProductAPI.Models.Dto;
@@ -44,19 +45,16 @@ namespace ProductAPI.Test
                 Assert.Equal(expected, assertion);
             }
         }
-        [Theory]
-        [ProductGetAllData]
-        public async void Get_ReturnsProductList_Throws(List<Product> data, bool expected)
+        [Fact]
+        public async void Get_CatchBadOptions()
         {
-            using (var context = new ApplicationDbContext(_fixture.failOptions))
+            using (var context = new ApplicationDbContext(_fixture.badOptions))
             {
                 var repository = new ProductRepository(context, _fixture.mapper);
                 var controller = new ProductAPIController(repository);
-                var response = await controller.Get();
-                var assertion = response.GetType() == typeof(ResponseDto);
-                Assert.Equal(expected, assertion);
-                Assert.True(((ResponseDto)response).DisplayMessage == "");
-                Assert.True(((ResponseDto)response).ErrorMessages.Count() > 0);
+                var response = (ResponseDto)await controller.Get();
+                Assert.False(response.IsSuccess);
+                Assert.True(response.ErrorMessages.Count() > 0);
             }
         }
 
@@ -75,6 +73,19 @@ namespace ProductAPI.Test
                 var assertion = typeof(ProductDto) == response.Result.GetType();
 
                 Assert.Equal(expected, assertion);
+            }
+        }
+
+        [Fact]
+        public async void GetById_CatchBadOptions()
+        {
+            using (var context = new ApplicationDbContext(_fixture.badOptions))
+            {
+                var repository = new ProductRepository(context, _fixture.mapper);
+                var controller = new ProductAPIController(repository);
+                var response = (ResponseDto)await controller.Get(It.IsAny<int>());
+                Assert.False(response.IsSuccess);
+                Assert.True(response.ErrorMessages.Count() > 0);
             }
         }
 
@@ -99,9 +110,25 @@ namespace ProductAPI.Test
             }
         }
 
+        [Fact]
+        public async void Post_CatchBadOject()
+        {
+            using (var context = new ApplicationDbContext(_fixture.CreateNewContextOptions()))
+            {
+                var notexpected = new ProductDto() { };
+                var repository = new ProductRepository(context, _fixture.mapper);
+                var controller = new ProductAPIController(repository);
+
+                var response = (ResponseDto)await controller.Post(notexpected);
+
+                Assert.False(response.IsSuccess);
+                Assert.True(response.ErrorMessages.Count() > 0);
+            }
+        }
+
         [Theory]
         [ProductDeleteData]
-        public async void Delete_ReturnsInsertedProduct(Product data, int arg, bool expected)
+        public async void Delete_ReturnsBoolYesOrNot(Product data, int arg, bool expected)
         {
             using (var context = new ApplicationDbContext(_fixture.CreateNewContextOptions()))
             {
@@ -115,6 +142,19 @@ namespace ProductAPI.Test
                 var assertion = deleted.IsSuccess == expected;
 
                 Assert.Equal(expected, assertion);
+            }
+        }
+
+        [Fact]
+        public async void Delete_CatchNeverGetsIn()
+        {
+            using (var context = new ApplicationDbContext(_fixture.badOptions))
+            {
+                var repository = new ProductRepository(context, _fixture.badMapper);
+                var controller = new ProductAPIController(repository);
+                var response = (ResponseDto)await controller.Delete(It.IsAny<int>());
+                //It never fails
+                Assert.True(response.IsSuccess);
             }
         }
 
@@ -132,8 +172,8 @@ namespace ProductAPI.Test
                 var controller = new ProductAPIController(repository);
                 context.ChangeTracker.Clear();
 
-                var response = await controller.Put(expected);
-                var updated = (ProductDto)((ResponseDto)response).Result;
+                var response = (ResponseDto)await controller.Put(expected);
+                var updated = (ProductDto)response.Result;
 
                 Assert.Equal(expected.ProductId, updated.ProductId);
                 Assert.Equal(expected.Name, updated.Name);
@@ -142,6 +182,19 @@ namespace ProductAPI.Test
                 Assert.Equal(expected.Description, updated.Description);
                 Assert.Equal(expected.CategoryName, updated.CategoryName);
                 Assert.Equal(expected.ImageUrl, updated.ImageUrl);
+            }
+        }
+
+        [Fact]
+        public async void Put_CatchBadOptions()
+        {
+            using (var context = new ApplicationDbContext(_fixture.badOptions))
+            {
+                var repository = new ProductRepository(context, _fixture.mapper);
+                var controller = new ProductAPIController(repository);
+                var response = (ResponseDto)await controller.Put(It.IsAny<ProductDto>());
+                Assert.False(response.IsSuccess);
+                Assert.True(response.ErrorMessages.Count() > 0);
             }
         }
     }
